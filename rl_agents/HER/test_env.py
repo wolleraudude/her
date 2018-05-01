@@ -17,9 +17,10 @@ class TestEnv(gym.Env):
     }
 
     def __init__(self):
-        self.max_speed = 100.
+        self.max_speed = 8.
         self.max_torque = 6.
         self.dt = .01
+        self.viewer = None
 
         high = np.array([1., 1., self.max_speed])
         self.action_space = spaces.Box(low=-self.max_torque, high=self.max_torque, shape=(1,))
@@ -43,6 +44,7 @@ class TestEnv(gym.Env):
 
         u = u * self.max_torque
         u = np.clip(u, -self.max_torque, self.max_torque)[0] # not really necessary
+        self.last_u = u
 
         newthdot = thdot + (-3*g/(2*l) * np.sin(th + np.pi) + 3./(m*l**2)*u) * dt
         newth = th + newthdot*dt
@@ -58,6 +60,7 @@ class TestEnv(gym.Env):
         delta_th = np.arccos(x_target[0]) - np.arccos(x[0])
         delta_thdot = x_target[2] - x[2]
         cost = angle_normalize(delta_th)**2 + 0.1*delta_thdot**2
+        cost /= np.pi**2 + 0.1 * self.max_speed**2
 
         if abs(delta_th) < 0.1 and abs(delta_thdot) < 0.01:
             return -cost, True
@@ -67,25 +70,50 @@ class TestEnv(gym.Env):
 
 
     def sample_goal(self):
-        high = np.array([np.pi, 1])
-        theta, _ = self.np_random.uniform(low=-high, high=high)
+        rand_val = self.np_random.randint(-10, 10)
+        rand_val /= 10.
+        theta = rand_val * np.pi
         self.goal = np.array([np.cos(theta), np.sin(theta), 0])
         return self.goal
 
     def reset(self):
         high = np.array([np.pi, 0])
         self.state = self.np_random.uniform(low=-high, high=high)
+        self.last_u = None
         return self._get_obs()
 
     def _get_obs(self):
         theta, thetadot = self.state
         return np.array([np.cos(theta), np.sin(theta), thetadot / self.max_speed])
 
-    def render(self, mode='human', close=False):
-        pass
+    def render(self, mode='human'):
+
+        if self.viewer is None:
+            from gym.envs.classic_control import rendering
+            self.viewer = rendering.Viewer(500, 500)
+            self.viewer.set_bounds(-2.2, 2.2, -2.2, 2.2)
+            rod = rendering.make_capsule(1, .2)
+            rod.set_color(.8, .3, .3)
+            self.pole_transform = rendering.Transform()
+            rod.add_attr(self.pole_transform)
+            self.viewer.add_geom(rod)
+            axle = rendering.make_circle(.05)
+            axle.set_color(0, 0, 0)
+            self.viewer.add_geom(axle)
+            fname = path.join(path.dirname(__file__), "assets/clockwise.png")
+            self.img = rendering.Image(fname, 1., 1.)
+            self.imgtrans = rendering.Transform()
+            self.img.add_attr(self.imgtrans)
+
+        self.viewer.add_onetime(self.img)
+        self.pole_transform.set_rotation(self.state[0] + np.pi / 2)
+        if self.last_u:
+            self.imgtrans.scale = (-self.last_u / 2., np.abs(self.last_u) / 2. )
+
+        return self.viewer.render(return_rgb_array=mode == 'rgb_array')
 
     def close(self):
-        pass
+        if self.viewer: self.viewer.close()
 
 def angle_normalize(x):
     return (((x+np.pi) % (2*np.pi)) - np.pi)
