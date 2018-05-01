@@ -59,7 +59,7 @@ if __name__ == '__main__':
     parser.add_argument('--actor_lr', help='actor network learning rate', default=0.0001, type=float)
     parser.add_argument('--critic_lr', help='critic network learning rate', default=0.001, type=float)
     parser.add_argument('--gamma', help='discount factor', default=0.99, type=float)
-    parser.add_argument('--tau', help='inertia factor of target nentwork', default=0.001, type=float)
+    parser.add_argument('--tau', help='inertia factor of target network', default=0.001, type=float)
     parser.add_argument('--buffer_size', help='maximum buffer size', default=1000000, type=int)
     parser.add_argument('--batch_size', help='batch size for training', default=64, type=int)
     parser.add_argument('--clip_val', help='gradient clip', default=40.0, type=float)
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     parser.add_argument('--env_name', help='environment name', default='Puzzle-v0')
     parser.add_argument('--her_k', help='k for HER replay', default=8, type=int)
     parser.add_argument('--max_episodes', help='number of total episodes', default=50000, type=int)
-    parser.add_argument('--max_episode_len', help='max episode length', default=2000, type=int)
+    parser.add_argument('--max_episode_len', help='max episode length', default=10000, type=int)
     parser.add_argument('--replay_len', help='replay frequency', default=40, type=int)
 
     # set up

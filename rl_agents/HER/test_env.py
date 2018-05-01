@@ -17,9 +17,9 @@ class TestEnv(gym.Env):
     }
 
     def __init__(self):
-        self.max_speed=8
-        self.max_torque=2.
-        self.dt=.05
+        self.max_speed = 100.
+        self.max_torque = 6.
+        self.dt = .01
 
         high = np.array([1., 1., self.max_speed])
         self.action_space = spaces.Box(low=-self.max_torque, high=self.max_torque, shape=(1,))
@@ -57,7 +57,7 @@ class TestEnv(gym.Env):
     def reward(self, x_target, x):
         if abs(x_target[0] - x[0]) < 0.1 and \
         abs(x_target[1] - x[1]) < 0.1 and \
-        abs(x_target[2] - x[2]) < 0.001:
+        abs(x_target[2] - x[2]) < 0.01:
             return 1, True
         else:
             return 0, False
@@ -69,7 +69,7 @@ class TestEnv(gym.Env):
         return self.goal
 
     def reset(self):
-        high = np.array([np.pi, 1])
+        high = np.array([np.pi, 0])
         self.state = self.np_random.uniform(low=-high, high=high)
         return self._get_obs()
 
