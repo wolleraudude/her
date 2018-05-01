@@ -55,12 +55,16 @@ class TestEnv(gym.Env):
         return obs, r, d, {}
 
     def reward(self, x_target, x):
-        if abs(x_target[0] - x[0]) < 0.1 and \
-        abs(x_target[1] - x[1]) < 0.1 and \
-        abs(x_target[2] - x[2]) < 0.01:
-            return 1, True
+        delta_th = np.arccos(x_target[0]) - np.arccos(x[0])
+        delta_thdot = x_target[2] - x[2]
+        cost = angle_normalize(delta_th)**2 + 0.1*delta_thdot**2
+
+        if abs(delta_th) < 0.1 and abs(delta_thdot) < 0.01:
+            return -cost, True
+
         else:
-            return 0, False
+            return -cost, False
+
 
     def sample_goal(self):
         high = np.array([np.pi, 1])
