@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # training parameters
     parser.add_argument('--device', help='device for training', default='/gpu:0')
     parser.add_argument('--rand_seed', help='random seed', default=1234, type=int)
-    parser.add_argument('--her_k', help='k for HER replay', default=4, type=int)
+    parser.add_argument('--her_k', help='k for HER replay', default=8, type=int)
     parser.add_argument('--max_episodes', help='number of total episodes', default=500, type=int)
     parser.add_argument('--max_episode_len', help='max episode length', default=1000, type=int)
     parser.add_argument('--replay_len', help='replay frequency', default=40, type=int)

@@ -61,7 +61,7 @@ class TestEnv(gym.Env):
         cost = angle_normalize(x_target[0] - x[0])**2 + 0.1 * x_target[1] - x[1]**2
         cost /= np.pi**2 + 0.5 * self.max_speed**2
 
-        if abs(x_target[0] - x[0]) < 0.1 and abs(x_target[1] - x[1]) < 1.:
+        if abs(x_target[0] - x[0]) < 0.01 and abs(x_target[1] - x[1]) < 0.1:
             return 1, True
 
         else:
@@ -69,8 +69,8 @@ class TestEnv(gym.Env):
 
 
     def sample_goal(self):
-        rand_val = self.np_random.randint(-2, 3)
-        rand_val /= 3
+        rand_val = self.np_random.randint(-10, 11)
+        rand_val /= 14
         self.goal = np.array([float(rand_val), 0])
         return self.goal
 
