@@ -37,8 +37,7 @@ def main(args):
         exp = Experience(args['buffer_size'], args['batch_size'], args['rand_seed'])
 
         # noise
-        actor_noise = ActorNoise(actor.predict, a_dim,  noise_type=args['noise_type'], action_high=env.action_space.high,
-                                 action_low=-env.action_space.high)
+        actor_noise = ActorNoise(actor.predict, a_dim,  noise_type=args['noise_type'])
 
         # initialize
         init = tf.global_variables_initializer()
@@ -58,14 +57,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='her')
 
     # agent parameters
-    parser.add_argument('--actor_lr', help='actor network learning rate', default=0.0001, type=float)
+    parser.add_argument('--actor_lr', help='actor network learning rate', default=0.001, type=float)
     parser.add_argument('--critic_lr', help='critic network learning rate', default=0.001, type=float)
     parser.add_argument('--gamma', help='discount factor', default=0.99, type=float)
     parser.add_argument('--tau', help='inertia factor of target network', default=0.001, type=float)
     parser.add_argument('--buffer_size', help='maximum buffer size', default=1000000, type=int)
-    parser.add_argument('--batch_size', help='batch size for training', default=64, type=int)
+    parser.add_argument('--batch_size', help='batch size for training', default=256, type=int)
     parser.add_argument('--clip_val', help='gradient clip', default=40.0, type=float)
-    parser.add_argument('--noise_type', help='OU or epsg', default='OU')
+    parser.add_argument('--noise_type', help='OU or epsg', default='epsg')
 
     # training parameters
     parser.add_argument('--device', help='device for training', default='/gpu:0')

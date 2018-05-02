@@ -1,7 +1,7 @@
 import numpy as np
 
 class ActorNoise:
-    def __init__(self, predict_action, a_dim,  noise_type='OU', action_high=None, action_low=None):
+    def __init__(self, predict_action, a_dim,  noise_type='OU', action_high=1, action_low=-1):
         self.noise = OrnsteinUhlenbeckActionNoise(predict_action, mu=np.zeros(shape=a_dim), sigma=0.2) \
             if noise_type == 'OU' else EpsilonGreedy(predict_action, a_dim, action_high, action_low)
 
@@ -57,4 +57,4 @@ class EpsilonGreedy:
 
     def _update_epsilon(self):
         # define epsilon schedule here
-        self.epsilon = 1. if self.step < 10000 else 0.1
+        self.epsilon = 1. if self.step < 10000 else 0.3
