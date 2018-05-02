@@ -21,6 +21,7 @@ class TestEnv(gym.Env):
         self.max_torque = 6.
         self.dt = .01
         self.viewer = None
+        self.goal_display = None
 
         high = np.array([1., 1., self.max_speed])
         self.action_space = spaces.Box(low=-self.max_torque, high=self.max_torque, shape=(1,))
@@ -112,8 +113,35 @@ class TestEnv(gym.Env):
 
         return self.viewer.render(return_rgb_array=mode == 'rgb_array')
 
+    def render_goal(self, mode='human'):
+
+        if self.goal_display is None:
+            from gym.envs.classic_control import rendering
+            self.goal_display = rendering.Viewer(500, 500)
+            self.goal_display.set_bounds(-2.2, 2.2, -2.2, 2.2)
+            rod = rendering.make_capsule(1, .2)
+            rod.set_color(.8, .3, .3)
+            self.pole_transform = rendering.Transform()
+            rod.add_attr(self.pole_transform)
+            self.goal_display.add_geom(rod)
+            axle = rendering.make_circle(.05)
+            axle.set_color(0, 0, 0)
+            self.goal_display.add_geom(axle)
+            fname = path.join(path.dirname(__file__), "assets/clockwise.png")
+            self.img = rendering.Image(fname, 1., 1.)
+            self.imgtrans = rendering.Transform()
+            self.img.add_attr(self.imgtrans)
+
+        self.goal_display.add_onetime(self.img)
+        self.pole_transform.set_rotation(self.state[0] + np.pi / 2)
+        if self.last_u:
+            self.imgtrans.scale = (-self.last_u / 2., np.abs(self.last_u) / 2. )
+
+        return self.goal_display.render(return_rgb_array=mode == 'rgb_array')
+
     def close(self):
         if self.viewer: self.viewer.close()
+        if self.goal_display: self.goal_display.close()
 
 def angle_normalize(x):
     return (((x+np.pi) % (2*np.pi)) - np.pi)

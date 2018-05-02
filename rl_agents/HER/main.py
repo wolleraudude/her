@@ -47,10 +47,11 @@ def main(args):
 
         # training
         her = HER(saver, exp, env, actor, critic, actor_noise)
-        her.train(args['gamma'], args['her_k'], args['max_episodes'], args['max_episode_len'], args['replay_len'])
+        if args['mode'] == 'train':
+            her.train(args['gamma'], args['her_k'], args['max_episodes'], args['max_episode_len'], args['replay_len'])
+        else:
+            her.play(args['max_episodes'], args['max_episode_len'])
 
-        # save model
-        saver.save_model(name_of_event='final')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='her')
@@ -75,6 +76,7 @@ if __name__ == '__main__':
 
     # set up
     parser.add_argument('--restore_path', help='path for model to restore', default='./restore')
+    parser.add_argument('--mode', help='play or train', default='train')
 
 
     args = vars(parser.parse_args())

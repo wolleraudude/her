@@ -45,7 +45,7 @@ class HER:
             her_k (int): Number of HER replays per experience sample.
             max_episodes (int): Max number of episodes to train.
             max_episode_len (int): Max number of steps in ep.
-            replay_le (int): Number of mini batches to replay.
+            replay_len (int): Number of mini batches to replay.
 
         Returns:
             void
@@ -130,6 +130,40 @@ class HER:
                 self.critic.update_vars()
 
             self.saver.save_model(name_of_event=str(i))
+
+    def play(self, max_episodes, max_episode_len):
+
+        total_r = 0
+
+        for i in range(max_episodes):
+
+            # reset if terminated
+            s = self.env.reset()
+            g = self.env.sample_goal()
+            self.env.render()
+            self.env.render_goal()
+
+            # concat
+            s_concat = concat(s, g)
+
+            # write to monitor
+            print('episode ' + str(i) + ' reward ' + str(total_r))
+            total_r = 0
+
+            for j in range(max_episode_len):
+                # predict action
+
+                a = self.actor.predict_target([s_concat])[0]
+
+                # take action
+                s_next, r, d, _ = self.env.step(a)
+                self.env.render()
+                s_next_concat = concat(s_next, g)
+                total_r += r
+
+                s_concat = s_next_concat
+                if d:
+                    break
 
     def _g_map(self, g):
         pass

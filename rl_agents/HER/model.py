@@ -9,7 +9,7 @@ class Model:
 
     def save_model(self, name_of_event):
         # use step as "name" in order to restore global step afterwards
-        self.saver.save(sess=self.sess, save_path=self.path + 'model-' + name_of_event)
+        self.saver.save(sess=self.sess, save_path=self.path + '/model-' + name_of_event)
         self.saver.export_meta_graph(self.path + '/model' + name_of_event + '.meta')
         print("saved..." + name_of_event)
 
