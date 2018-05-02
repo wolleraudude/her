@@ -2,11 +2,14 @@ import numpy as np
 
 class ActorNoise:
     def __init__(self, predict_action, a_dim,  noise_type='OU', action_high=None, action_low=None):
-        self.noise = OrnsteinUhlenbeckActionNoise(predict_action, mu=np.zeros(shape=a_dim), sigma=0.2) \
+        self.noise = OrnsteinUhlenbeckActionNoise(predict_action, mu=np.zeros(shape=a_dim), sigma=0.3) \
             if noise_type == 'OU' else EpsilonGreedy(predict_action, a_dim, action_high, action_low)
 
     def predict_action(self, s):
         return self.noise(s)
+
+    def reset(self):
+        self.noise.reset()
 
 
 class OrnsteinUhlenbeckActionNoise:
@@ -23,7 +26,7 @@ class OrnsteinUhlenbeckActionNoise:
     def __call__(self, s):
         x = self.x_prev + self.theta * (self.mu - self.x_prev) * self.dt + self.sigma * np.sqrt(self.dt) * np.random.normal(size=self.mu.shape)
         self.x_prev = x
-        return self.predict_action.predict([s])[0] + x
+        return self.predict_action([s])[0] + x
 
     def reset(self):
         self.x_prev = self.x0 if self.x0 is not None else np.zeros_like(self.mu)
@@ -44,11 +47,14 @@ class EpsilonGreedy:
 
     def __call__(self, s):
         if np.random.uniform() > self.epsilon:
-            a = self.predict_action.predict([s])[0]
+            a = self.predict_action([s])[0]
         else:
             a = np.random.uniform(self.action_low, self.action_high, size=self.a_dim)
         self._update_epsilon()
         return a
+
+    def reset(self):
+        pass
 
     def _update_epsilon(self):
         # define epsilon schedule here

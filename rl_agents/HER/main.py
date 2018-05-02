@@ -9,7 +9,7 @@ from monitor import Monitor
 from model import Model
 from actor_critic import Actor, Critic
 from experience import Experience
-from noise import OrnsteinUhlenbeckActionNoise
+from noise import ActorNoise
 from test_env import TestEnv
 
 def main(args):
@@ -37,7 +37,8 @@ def main(args):
         exp = Experience(args['buffer_size'], args['batch_size'], args['rand_seed'])
 
         # noise
-        actor_noise = OrnsteinUhlenbeckActionNoise(mu=np.zeros(shape=a_dim), sigma=0.2)
+        actor_noise = ActorNoise(actor.predict, a_dim,  noise_type='OU', action_high=env.action_space.high,
+                                 action_low=-env.action_space.high)
 
         # initialize
         init = tf.global_variables_initializer()

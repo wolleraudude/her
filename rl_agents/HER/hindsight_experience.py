@@ -70,9 +70,9 @@ class HER:
             total_r = 0
             
             for j in range(max_episode_len):
-                # predict action
 
-                a = self.actor.predict([s_concat])[0] + self.actor_noise()
+                # predict action
+                a = self.actor_noise.predict_action(s_concat)
 
                 # take action
                 s_next, r, d, _ = self.env.step(a)
@@ -151,8 +151,8 @@ class HER:
             total_r = 0
 
             for j in range(max_episode_len):
-                # predict action
 
+                # predict action
                 a = self.actor.predict_target([s_concat])[0]
 
                 # take action
