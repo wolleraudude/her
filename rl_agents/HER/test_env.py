@@ -23,7 +23,7 @@ class TestEnv(gym.Env):
         self.viewer = None
         self.goal_display = None
 
-        high = np.array([1., 1., self.max_speed])
+        high = np.array([1., self.max_speed])
         self.action_space = spaces.Box(low=-self.max_torque, high=self.max_torque, shape=(1,))
         self.observation_space = spaces.Box(low=-high, high=high)
 
