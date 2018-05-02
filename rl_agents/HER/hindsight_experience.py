@@ -157,7 +157,6 @@ class HER:
 
                 # predict action
                 a = self.actor.predict_target([s_concat])[0]
-                print('         action:' + str(a))
 
                 # take action
                 s_next, r, d, _ = self.env.step(a)
