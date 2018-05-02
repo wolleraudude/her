@@ -19,7 +19,7 @@ class TestEnv(gym.Env):
     def __init__(self):
         self.max_speed = 8.
         self.max_torque = 6.
-        self.dt = .01
+        self.dt = .05
         self.viewer = None
         self.goal_display = None
 
@@ -60,10 +60,10 @@ class TestEnv(gym.Env):
     def reward(self, x_target, x):
         delta_th = np.arccos(x_target[0]) - np.arccos(x[0])
         delta_thdot = x_target[2] - x[2]
-        cost = angle_normalize(delta_th)**2 + 0.1*delta_thdot**2
-        cost /= np.pi**2 + 0.1 * self.max_speed**2
+        cost = angle_normalize(delta_th)**2 + 0.1 * delta_thdot**2
+        cost /= np.pi**2 + 0.5 * self.max_speed**2
 
-        if abs(delta_th) < 0.1 and abs(delta_thdot) < 0.01:
+        if abs(delta_th) < 0.1 * np.pi and abs(delta_thdot) < 0.01:
             return -cost, True
 
         else:
@@ -133,15 +133,17 @@ class TestEnv(gym.Env):
             self.img.add_attr(self.imgtrans)
 
         self.goal_display.add_onetime(self.img)
-        self.pole_transform.set_rotation(self.state[0] + np.pi / 2)
-        if self.last_u:
-            self.imgtrans.scale = (-self.last_u / 2., np.abs(self.last_u) / 2. )
+        self.pole_transform.set_rotation(self.goal[0] + np.pi / 2)
 
         return self.goal_display.render(return_rgb_array=mode == 'rgb_array')
 
     def close(self):
         if self.viewer: self.viewer.close()
+        self.viewer = None
+
+    def close_goal(self):
         if self.goal_display: self.goal_display.close()
+        self.goal_display = None
 
 def angle_normalize(x):
     return (((x+np.pi) % (2*np.pi)) - np.pi)

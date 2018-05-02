@@ -1,5 +1,6 @@
 """Hindsight Experience Replay implementation with future replay."""
 
+import time
 import numpy as np
 from collections import deque
 from utils import concat
@@ -140,8 +141,11 @@ class HER:
             # reset if terminated
             s = self.env.reset()
             g = self.env.sample_goal()
-            self.env.render()
             self.env.render_goal()
+            time.sleep(2)
+            self.env.close_goal()
+
+
 
             # concat
             s_concat = concat(s, g)
@@ -164,6 +168,8 @@ class HER:
                 s_concat = s_next_concat
                 if d:
                     break
+
+            self.env.close()
 
     def _g_map(self, g):
         pass

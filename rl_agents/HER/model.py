@@ -5,12 +5,12 @@ class Model:
         self.sess = sess
         self.path = path
         if not restore_only:
-            self.saver = tf.train.Saver(max_to_keep=20, keep_checkpoint_every_n_hours=2)
+            self.saver = tf.train.Saver(keep_checkpoint_every_n_hours=1)
 
     def save_model(self, name_of_event):
         # use step as "name" in order to restore global step afterwards
         self.saver.save(sess=self.sess, save_path=self.path + '/model-' + name_of_event)
-        self.saver.export_meta_graph(self.path + '/model' + name_of_event + '.meta')
+        self.saver.export_meta_graph(self.path + '/model-' + name_of_event + '.meta')
         print("saved..." + name_of_event)
 
     def restore_model(self):
