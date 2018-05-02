@@ -63,11 +63,11 @@ class TestEnv(gym.Env):
         cost = angle_normalize(delta_th)**2 + 0.1 * delta_thdot**2
         cost /= np.pi**2 + 0.5 * self.max_speed**2
 
-        if abs(delta_th) < 0.1 * np.pi and abs(delta_thdot) < 0.01:
-            return -cost, True
+        if abs(x_target[0] - x[0]) < 0.1 and abs(x_target[1] - x[1]) < 0.1 and abs(delta_thdot) < 0.01:
+            return 1, True
 
         else:
-            return -cost, False
+            return 0, False
 
 
     def sample_goal(self):
@@ -78,7 +78,7 @@ class TestEnv(gym.Env):
         return self.goal
 
     def reset(self):
-        high = np.array([np.pi, 0])
+        high = np.array([np.pi, 1])
         self.state = self.np_random.uniform(low=-high, high=high)
         self.last_u = None
         return self._get_obs()

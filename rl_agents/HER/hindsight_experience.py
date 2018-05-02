@@ -63,6 +63,7 @@ class HER:
             g = self.env.sample_goal()
             self.actor_noise.reset()
             self.ep_buffer.clear()
+
             # concat
             s_concat = concat(s, g)
 
@@ -144,8 +145,6 @@ class HER:
             self.env.render_goal()
             time.sleep(2)
             self.env.close_goal()
-
-
 
             # concat
             s_concat = concat(s, g)

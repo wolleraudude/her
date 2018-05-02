@@ -2,7 +2,7 @@ import numpy as np
 
 class ActorNoise:
     def __init__(self, predict_action, a_dim,  noise_type='OU', action_high=None, action_low=None):
-        self.noise = OrnsteinUhlenbeckActionNoise(predict_action, mu=np.zeros(shape=a_dim), sigma=0.3) \
+        self.noise = OrnsteinUhlenbeckActionNoise(predict_action, mu=np.zeros(shape=a_dim), sigma=0.2) \
             if noise_type == 'OU' else EpsilonGreedy(predict_action, a_dim, action_high, action_low)
 
     def predict_action(self, s):
@@ -10,7 +10,6 @@ class ActorNoise:
 
     def reset(self):
         self.noise.reset()
-
 
 class OrnsteinUhlenbeckActionNoise:
     def __init__(self, predict_action, mu, sigma, theta=0.15, dt=1e-2, x0=None, rand_seed=1234):
