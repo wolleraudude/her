@@ -46,7 +46,7 @@ def main(args):
         saver.restore_model()
 
         # training
-        her = HER(sess, exp, env, actor, critic, actor_noise)
+        her = HER(saver, exp, env, actor, critic, actor_noise)
         her.train(args['gamma'], args['her_k'], args['max_episodes'], args['max_episode_len'], args['replay_len'])
 
         # save model
