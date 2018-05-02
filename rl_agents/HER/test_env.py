@@ -70,8 +70,8 @@ class TestEnv(gym.Env):
 
 
     def sample_goal(self):
-        rand_val = self.np_random.randint(-10, 10)
-        rand_val /= 10.
+        rand_val = self.np_random.randint(-5, 5)
+        rand_val /= 5.
         theta = rand_val * np.pi
         self.goal = np.array([np.cos(theta), np.sin(theta), 0])
         return self.goal

@@ -61,17 +61,17 @@ if __name__ == '__main__':
     parser.add_argument('--gamma', help='discount factor', default=0.99, type=float)
     parser.add_argument('--tau', help='inertia factor of target network', default=0.001, type=float)
     parser.add_argument('--buffer_size', help='maximum buffer size', default=1000000, type=int)
-    parser.add_argument('--batch_size', help='batch size for training', default=64, type=int)
+    parser.add_argument('--batch_size', help='batch size for training', default=1000, type=int)
     parser.add_argument('--clip_val', help='gradient clip', default=40.0, type=float)
 
     # training parameters
     parser.add_argument('--device', help='device for training', default='/gpu:0')
     parser.add_argument('--rand_seed', help='random seed', default=1234, type=int)
     parser.add_argument('--env_name', help='environment name', default='Puzzle-v0')
-    parser.add_argument('--her_k', help='k for HER replay', default=8, type=int)
+    parser.add_argument('--her_k', help='k for HER replay', default=4, type=int)
     parser.add_argument('--max_episodes', help='number of total episodes', default=50000, type=int)
     parser.add_argument('--max_episode_len', help='max episode length', default=10000, type=int)
-    parser.add_argument('--replay_len', help='replay frequency', default=40, type=int)
+    parser.add_argument('--replay_len', help='replay frequency', default=3, type=int)
 
     # set up
     parser.add_argument('--restore_path', help='path for model to restore', default='./restore')

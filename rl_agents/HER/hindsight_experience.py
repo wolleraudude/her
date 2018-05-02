@@ -18,11 +18,10 @@ class HER:
         ep_buffer (deque): List to store episode experience
       """
 
-    def __init__(self, sess, buffer, env, actor, critic, actor_noise):
+    def __init__(self, saver, buffer, env, actor, critic, actor_noise):
         """Initialize HER agent.
 
         Args:
-            sess (): Tensorflow session.
             buffer(): Buffer.
             env (): Environment.
             actor (): Actor.
@@ -30,7 +29,7 @@ class HER:
             actor_noise (): Exploration noise.
             r_mon (): Reward monitor.
         """
-        self.sess = sess
+        self.saver = saver
         self.buffer = buffer
         self.env = env
         self.actor = actor
@@ -129,6 +128,8 @@ class HER:
                 # update target networks
                 self.actor.update_vars()
                 self.critic.update_vars()
+
+            self.saver.save_model(name_of_event=str(i))
 
     def _g_map(self, g):
         pass
