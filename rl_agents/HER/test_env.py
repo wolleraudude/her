@@ -18,7 +18,7 @@ class TestEnv(gym.Env):
 
     def __init__(self):
         self.max_speed = 8.
-        self.max_torque = 6.
+        self.max_torque = 3.
         self.dt = .05
         self.viewer = None
         self.goal_display = None
@@ -58,12 +58,10 @@ class TestEnv(gym.Env):
         return obs, r, d, {}
 
     def reward(self, x_target, x):
-        delta_th = np.arccos(x_target[0]) - np.arccos(x[0])
-        delta_thdot = x_target[2] - x[2]
-        cost = angle_normalize(delta_th)**2 + 0.1 * delta_thdot**2
+        cost = angle_normalize(x_target[0] - x[0])**2 + 0.1 * x_target[1] - x[1]**2
         cost /= np.pi**2 + 0.5 * self.max_speed**2
 
-        if abs(x_target[0] - x[0]) < 0.1 and abs(x_target[1] - x[1]) < 0.1 and abs(delta_thdot) < 0.01:
+        if abs(x_target[0] - x[0]) < 0.1 and abs(x_target[1] - x[1]) < 1.:
             return 1, True
 
         else:
@@ -71,10 +69,9 @@ class TestEnv(gym.Env):
 
 
     def sample_goal(self):
-        rand_val = self.np_random.randint(-5, 5)
-        rand_val /= 5.
-        theta = rand_val * np.pi
-        self.goal = np.array([np.cos(theta), np.sin(theta), 0])
+        rand_val = self.np_random.randint(-2, 3)
+        rand_val /= 3
+        self.goal = np.array([float(rand_val), 0])
         return self.goal
 
     def reset(self):
@@ -85,7 +82,8 @@ class TestEnv(gym.Env):
 
     def _get_obs(self):
         theta, thetadot = self.state
-        return np.array([np.cos(theta), np.sin(theta), thetadot / self.max_speed])
+        theta = angle_normalize(theta)
+        return np.array([theta / np.pi, thetadot / self.max_speed])
 
     def render(self, mode='human'):
 
